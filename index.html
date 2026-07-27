@@ -185,6 +185,21 @@
       color: #e5e5ea;
     }
 
+    .custom-name-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed #545458;
+      color: #e5e5ea;
+      font-size: 14px;
+      width: 90px;
+      outline: none;
+      padding: 0 2px;
+    }
+
+    .custom-name-input:focus {
+      border-bottom-color: #0a84ff;
+    }
+
     .deduction-input-wrap {
       display: flex;
       align-items: center;
@@ -288,14 +303,14 @@
 
   <!-- 工作時間輸入 -->
   <div class="form-group">
-    <label>工作時間（請手動輸入）</label>
+    <label>工作時間（手動輸入）</label>
     <div class="time-input-container">
       <div class="input-column">
-        <input type="number" id="hoursInput" placeholder="在此輸入" min="0">
+        <input type="number" id="hoursInput" placeholder="0" min="0">
         <span>小時</span>
       </div>
       <div class="input-column">
-        <input type="number" id="minutesInput" placeholder="在此輸入" min="0" max="59">
+        <input type="number" id="minutesInput" placeholder="0" min="0" max="59">
         <span>分鐘</span>
       </div>
     </div>
@@ -305,17 +320,17 @@
   <div class="two-column-inputs">
     <div class="input-card">
       <label for="bonus">獎金 (元)</label>
-      <input type="number" class="card-input" id="bonus" placeholder="空白=0" value="0" min="0">
+      <input type="number" class="card-input" id="bonus" placeholder="0" value="0" min="0">
     </div>
     <div class="input-card">
       <label for="penalty">罰金 / 扣款 (元)</label>
-      <input type="number" class="card-input" id="penalty" placeholder="空白=0" value="0" min="0">
+      <input type="number" class="card-input" id="penalty" placeholder="0" value="0" min="0">
     </div>
   </div>
 
   <!-- 代扣項目設定 -->
   <div class="deductions-section">
-    <div class="deduction-title">代扣項目設定（勾選並填寫金額）</div>
+    <div class="deduction-title">代扣項目設定（勾選並設定金額）</div>
     
     <div class="deduction-row">
       <label class="checkbox-item" for="laborCheck">
@@ -361,14 +376,15 @@
       </div>
     </div>
 
+    <!-- 新增：每月固定扣款/訂閱項目 -->
     <div class="deduction-row">
-      <label class="checkbox-item" for="nhiCheck">
-        <input type="checkbox" id="nhiCheck">
-        <span>固定扣款(如電信費)</span>
+      <label class="checkbox-item" for="subCheck">
+        <input type="checkbox" id="subCheck">
+        <input type="text" class="custom-name-input" id="subName" value="月費/訂閱" placeholder="項目名稱">
       </label>
       <div class="deduction-input-wrap">
         <span>$</span>
-        <input type="number" id="nhiVal" value="754" min="0">
+        <input type="number" id="subVal" value="754" min="0">
       </div>
     </div>
   </div>
@@ -410,8 +426,12 @@
     const hasNHI = document.getElementById('nhiCheck').checked;
     const nhiVal = hasNHI ? (parseFloat(document.getElementById('nhiVal').value) || 0) : 0;
 
+    // 自訂固定扣款（訂閱費等）
+    const hasSub = document.getElementById('subCheck').checked;
+    const subVal = hasSub ? (parseFloat(document.getElementById('subVal').value) || 0) : 0;
+
     // 計算總扣除額
-    const totalDeductions = laborVal + groupVal + transferVal + nhiVal;
+    const totalDeductions = laborVal + groupVal + transferVal + nhiVal + subVal;
 
     // 時間轉為總小時數（包含分鐘換算）
     const totalHours = hours + (minutes / 60);
