@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>薪資計算器 - (時薪196)</title>
+  <title>薪資計算器</title>
   <style>
     * {
       box-sizing: border-box;
@@ -89,6 +89,46 @@
       white-space: nowrap;
     }
 
+    /* 獎金與罰金雙欄卡片樣式 */
+    .two-column-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .input-card {
+      background: #2c2c2e;
+      border: 1px solid #3a3a3c;
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+
+    .input-card:focus-within, .input-column:focus-within {
+      border-color: #0a84ff;
+    }
+
+    .input-card label {
+      font-size: 13px;
+      color: #8e8e93;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .card-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      outline: none;
+      padding: 0;
+    }
+
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -99,23 +139,7 @@
       -moz-appearance: textfield;
     }
 
-    .single-input {
-      width: 100%;
-      padding: 12px 14px;
-      background-color: #2c2c2e;
-      border: 1px solid #3a3a3c;
-      border-radius: 12px;
-      font-size: 15px;
-      color: #ffffff;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .single-input:focus, .input-column:focus-within {
-      border-color: #0a84ff;
-    }
-
-    /* 扣項勾選與自訂金額區域 */
+    /* 代扣項目區域 */
     .deductions-section {
       background: #2c2c2e;
       border-radius: 14px;
@@ -262,6 +286,7 @@
 <div class="calculator-card">
   <h2>薪資計算器</h2>
 
+  <!-- 工作時間輸入 -->
   <div class="form-group">
     <label>工作時間（手動輸入）</label>
     <div class="time-input-container">
@@ -276,6 +301,7 @@
     </div>
   </div>
 
+  <!-- 獎金與罰金 (雙欄卡片樣式) -->
   <div class="two-column-inputs">
     <div class="input-card">
       <label for="bonus">獎金 (元)</label>
@@ -287,6 +313,7 @@
     </div>
   </div>
 
+  <!-- 代扣項目設定 -->
   <div class="deductions-section">
     <div class="deduction-title">代扣項目設定（勾選並設定金額）</div>
     
@@ -333,21 +360,11 @@
         <input type="number" id="nhiVal" value="426" min="0">
       </div>
     </div>
-
-    <div class="deduction-row">
-      <label class="checkbox-item" for="nhiCheck">
-        <input type="checkbox" id="nhiCheck">
-        <span>固定扣款(如電信費)</span>
-      </label>
-      <div class="deduction-input-wrap">
-        <span>$</span>
-        <input type="number" id="nhiVal" value="754" min="0">
-      </div>
-    </div>
   </div>
 
   <button id="calcBtn">確認計算</button>
 
+  <!-- 結果區域 (雙欄卡片) -->
   <div class="result-grid">
     <div class="result-card">
       <span class="result-label">總薪水 (含獎金)</span>
@@ -358,7 +375,6 @@
       <strong class="result-value" id="netSalary">$ 0</strong>
     </div>
   </div>
-    <label>此為Xiaonuo為了方便做的小工具</label>
 </div>
 
 <script>
