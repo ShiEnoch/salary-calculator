@@ -406,14 +406,48 @@
 </div>
 
 <script>
+  // 1. 需要被記憶的所有欄位 ID
+  const memoryFields = {
+    checkboxes: ['laborCheck', 'groupCheck', 'transferCheck', 'nhiCheck', 'subCheck'],
+    inputs: ['laborVal', 'groupVal', 'transferVal', 'nhiVal', 'subVal', 'subName', 'bonus', 'penalty']
+  };
+
+  // 2. 頁面開啟時自動讀取舊設定
+  window.addEventListener('DOMContentLoaded', () => {
+    memoryFields.checkboxes.forEach(id => {
+      const saved = localStorage.getItem(id);
+      if (saved !== null) document.getElementById(id).checked = (saved === 'true');
+    });
+    memoryFields.inputs.forEach(id => {
+      const saved = localStorage.getItem(id);
+      if (saved !== null) document.getElementById(id).value = saved;
+    });
+  });
+
+  // 3. 自動儲存變動
+  function saveSettings() {
+    memoryFields.checkboxes.forEach(id => localStorage.setItem(id, document.getElementById(id).checked));
+    memoryFields.inputs.forEach(id => localStorage.setItem(id, document.getElementById(id).value));
+  }
+
+  memoryFields.checkboxes.concat(memoryFields.inputs).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', saveSettings);
+      el.addEventListener('input', saveSettings);
+    }
+  });
+
+  // 4. 按鈕點擊計算薪資
   document.getElementById('calcBtn').addEventListener('click', function () {
-    const hourlyRate = 196; // 時薪 196 元
+    saveSettings();
+
+    const hourlyRate = 196;
     const hours = parseFloat(document.getElementById('hoursInput').value) || 0;
     const minutes = parseFloat(document.getElementById('minutesInput').value) || 0;
     const bonus = parseFloat(document.getElementById('bonus').value) || 0;
     const penalty = parseFloat(document.getElementById('penalty').value) || 0;
 
-    // 取得各個扣項的勾選狀態與輸入金額
     const hasLabor = document.getElementById('laborCheck').checked;
     const laborVal = hasLabor ? (parseFloat(document.getElementById('laborVal').value) || 0) : 0;
 
@@ -426,22 +460,17 @@
     const hasNHI = document.getElementById('nhiCheck').checked;
     const nhiVal = hasNHI ? (parseFloat(document.getElementById('nhiVal').value) || 0) : 0;
 
-    // 自訂固定扣款（訂閱費等）
+    // 自訂固定扣款/訂閱
     const hasSub = document.getElementById('subCheck').checked;
     const subVal = hasSub ? (parseFloat(document.getElementById('subVal').value) || 0) : 0;
 
-    // 計算總扣除額
     const totalDeductions = laborVal + groupVal + transferVal + nhiVal + subVal;
-
-    // 時間轉為總小時數（包含分鐘換算）
     const totalHours = hours + (minutes / 60);
 
-    // 薪資計算
     const baseSalary = Math.round(hourlyRate * totalHours);
-    const totalSalary = baseSalary + bonus; // 總薪水 = 基本薪資 + 獎金
-    const netSalary = totalSalary - totalDeductions - penalty; // 實拿薪水
+    const totalSalary = baseSalary + bonus;
+    const netSalary = totalSalary - totalDeductions - penalty;
 
-    // 渲染結果
     document.getElementById('totalSalary').textContent = '$ ' + totalSalary.toLocaleString();
     document.getElementById('netSalary').textContent = '$ ' + (netSalary < 0 ? 0 : netSalary).toLocaleString();
   });
