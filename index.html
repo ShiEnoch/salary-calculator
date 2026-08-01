@@ -303,14 +303,14 @@
 
   <!-- 工作時間輸入 -->
   <div class="form-group">
-    <label>工作時間（手動輸入）</label>
+    <label>工時（請手動輸入） 時數請至Apollo個人班表查看</label>
     <div class="time-input-container">
       <div class="input-column">
-        <input type="number" id="hoursInput" placeholder="0" min="0">
+        <input type="number" id="hoursInput" placeholder="在此輸入" min="0">
         <span>小時</span>
       </div>
       <div class="input-column">
-        <input type="number" id="minutesInput" placeholder="0" min="0" max="59">
+        <input type="number" id="minutesInput" placeholder="在此輸入" min="0" max="59">
         <span>分鐘</span>
       </div>
     </div>
@@ -320,17 +320,17 @@
   <div class="two-column-inputs">
     <div class="input-card">
       <label for="bonus">獎金 (元)</label>
-      <input type="number" class="card-input" id="bonus" placeholder="0" value="0" min="0">
+      <input type="number" class="card-input" id="bonus" placeholder="空白=0" value="0" min="0">
     </div>
     <div class="input-card">
       <label for="penalty">罰金 / 扣款 (元)</label>
-      <input type="number" class="card-input" id="penalty" placeholder="0" value="0" min="0">
+      <input type="number" class="card-input" id="penalty" placeholder="空白=0" value="0" min="0">
     </div>
   </div>
 
   <!-- 代扣項目設定 -->
   <div class="deductions-section">
-    <div class="deduction-title">代扣項目設定（勾選並設定金額）</div>
+    <div class="deduction-title">代扣項目設定（勾選並輸入金額）</div>
     
     <div class="deduction-row">
       <label class="checkbox-item" for="laborCheck">
@@ -380,7 +380,7 @@
     <div class="deduction-row">
       <label class="checkbox-item" for="subCheck">
         <input type="checkbox" id="subCheck">
-        <input type="text" class="custom-name-input" id="subName" value="月費/訂閱" placeholder="項目名稱">
+        <span>固定扣款(月費/訂閱)</span>
       </label>
       <div class="deduction-input-wrap">
         <span>$</span>
@@ -402,6 +402,7 @@
       <strong class="result-value" id="netSalary">$ 0</strong>
     </div>
   </div>
+  <label>*此為Xiaonuo想方便而設計的系統*</label>
 </div>
 
 <script>
