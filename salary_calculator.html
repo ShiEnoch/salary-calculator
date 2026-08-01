@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>薪資計算器</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000000;
+      color: #f2f2f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .calculator-card {
+      background: #1c1c1e;
+      padding: 28px;
+      border-radius: 20px;
+      border: 1px solid #2c2c2e;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 22px;
+      color: #ffffff;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #a1a1a6;
+      font-size: 14px;
+    }
+
+    .time-input-container {
+      display: flex;
+      gap: 12px;
+    }
+
+    .input-column {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background-color: #2c2c2e;
+      border: 1px solid #3a3a3c;
+      border-radius: 12px;
+      padding: 0 14px;
+      transition: border-color 0.2s;
+    }
+
+    .input-column input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 12px 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: #ffffff;
+      outline: none;
+      width: 100%;
+    }
+
+    .input-column span {
+      font-size: 14px;
+      color: #8e8e93;
+      font-weight: 500;
+      margin-left: 6px;
+      white-space: nowrap;
+    }
+
+    /* 獎金與罰金雙欄卡片樣式 */
+    .two-column-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .input-card {
+      background: #2c2c2e;
+      border: 1px solid #3a3a3c;
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+
+    .input-card:focus-within, .input-column:focus-within {
+      border-color: #0a84ff;
+    }
+
+    .input-card label {
+      font-size: 13px;
+      color: #8e8e93;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .card-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      outline: none;
+      padding: 0;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    /* 代扣項目區域 */
+    .deductions-section {
+      background: #2c2c2e;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin: 20px 0;
+      border: 1px solid #3a3a3c;
+    }
+
+    .deduction-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0a84ff;
+      margin-bottom: 12px;
+    }
+
+    .deduction-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .deduction-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #0a84ff;
+      cursor: pointer;
+    }
+
+    .checkbox-item span {
+      font-size: 14px;
+      color: #e5e5ea;
+    }
+
+    .custom-name-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed #545458;
+      color: #e5e5ea;
+      font-size: 14px;
+      width: 90px;
+      outline: none;
+      padding: 0 2px;
+    }
+
+    .custom-name-input:focus {
+      border-bottom-color: #0a84ff;
+    }
+
+    .deduction-input-wrap {
+      display: flex;
+      align-items: center;
+      background: #1c1c1e;
+      border: 1px solid #3a3a3c;
+      border-radius: 8px;
+      padding: 4px 8px;
+      width: 90px;
+    }
+
+    .deduction-input-wrap span {
+      color: #8e8e93;
+      font-size: 13px;
+      margin-right: 4px;
+    }
+
+    .deduction-input-wrap input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 14px;
+      outline: none;
+      text-align: right;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #0a84ff;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, opacity 0.2s;
+      margin-top: 6px;
+    }
+
+    button:hover {
+      background-color: #0071e3;
+    }
+
+    button:active {
+      opacity: 0.8;
+    }
+
+    /* 結果顯示卡片區域 */
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .result-card {
+      background: #2c2c2e;
+      border: 1px solid #3a3a3c;
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .result-card.highlight {
+      background: rgba(48, 209, 88, 0.1);
+      border-color: rgba(48, 209, 88, 0.3);
+    }
+
+    .result-label {
+      font-size: 13px;
+      color: #8e8e93;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .result-card.highlight .result-label {
+      color: #30d158;
+    }
+
+    .result-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .result-card.highlight .result-value {
+      color: #30d158;
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator-card">
+  <h2>薪資計算器</h2>
+
+  <!-- 工作時間輸入 -->
+  <div class="form-group">
+    <label>工作時間（手動輸入）</label>
+    <div class="time-input-container">
+      <div class="input-column">
+        <input type="number" id="hoursInput" placeholder="0" min="0">
+        <span>小時</span>
+      </div>
+      <div class="input-column">
+        <input type="number" id="minutesInput" placeholder="0" min="0" max="59">
+        <span>分鐘</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 獎金與罰金 (雙欄卡片樣式) -->
+  <div class="two-column-inputs">
+    <div class="input-card">
+      <label for="bonus">獎金 (元)</label>
+      <input type="number" class="card-input" id="bonus" placeholder="0" value="0" min="0">
+    </div>
+    <div class="input-card">
+      <label for="penalty">罰金 / 扣款 (元)</label>
+      <input type="number" class="card-input" id="penalty" placeholder="0" value="0" min="0">
+    </div>
+  </div>
+
+  <!-- 代扣項目設定 -->
+  <div class="deductions-section">
+    <div class="deduction-title">代扣項目設定（勾選並設定金額）</div>
+    
+    <div class="deduction-row">
+      <label class="checkbox-item" for="laborCheck">
+        <input type="checkbox" id="laborCheck" checked>
+        <span>勞保費</span>
+      </label>
+      <div class="deduction-input-wrap">
+        <span>$</span>
+        <input type="number" id="laborVal" value="277" min="0">
+      </div>
+    </div>
+
+    <div class="deduction-row">
+      <label class="checkbox-item" for="groupCheck">
+        <input type="checkbox" id="groupCheck" checked>
+        <span>團保費</span>
+      </label>
+      <div class="deduction-input-wrap">
+        <span>$</span>
+        <input type="number" id="groupVal" value="210" min="0">
+      </div>
+    </div>
+
+    <div class="deduction-row">
+      <label class="checkbox-item" for="transferCheck">
+        <input type="checkbox" id="transferCheck" checked>
+        <span>轉帳匯費</span>
+      </label>
+      <div class="deduction-input-wrap">
+        <span>$</span>
+        <input type="number" id="transferVal" value="30" min="0">
+      </div>
+    </div>
+
+    <div class="deduction-row">
+      <label class="checkbox-item" for="nhiCheck">
+        <input type="checkbox" id="nhiCheck">
+        <span>健保費</span>
+      </label>
+      <div class="deduction-input-wrap">
+        <span>$</span>
+        <input type="number" id="nhiVal" value="426" min="0">
+      </div>
+    </div>
+
+    <!-- 每月固定扣款/訂閱項目 -->
+    <div class="deduction-row">
+      <label class="checkbox-item" for="subCheck">
+        <input type="checkbox" id="subCheck">
+        <input type="text" class="custom-name-input" id="subName" value="月費/訂閱" placeholder="項目名稱">
+      </label>
+      <div class="deduction-input-wrap">
+        <span>$</span>
+        <input type="number" id="subVal" value="100" min="0">
+      </div>
+    </div>
+  </div>
+
+  <button id="calcBtn">確認計算</button>
+
+  <!-- 結果區域 (雙欄卡片) -->
+  <div class="result-grid">
+    <div class="result-card">
+      <span class="result-label">總薪水 (含獎金)</span>
+      <strong class="result-value" id="totalSalary">$ 0</strong>
+    </div>
+    <div class="result-card highlight">
+      <span class="result-label">實拿薪水</span>
+      <strong class="result-value" id="netSalary">$ 0</strong>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 需要被記憶的所有輸入框與核取方塊的 ID 清單
+  const memoryFields = {
+    checkboxes: ['laborCheck', 'groupCheck', 'transferCheck', 'nhiCheck', 'subCheck'],
+    inputs: ['laborVal', 'groupVal', 'transferVal', 'nhiVal', 'subVal', 'subName', 'bonus', 'penalty']
+  };
+
+  // 1. 頁面載入時：自動讀取儲存的設定
+  window.addEventListener('DOMContentLoaded', () => {
+    memoryFields.checkboxes.forEach(id => {
+      const savedValue = localStorage.getItem(id);
+      if (savedValue !== null) {
+        document.getElementById(id).checked = (savedValue === 'true');
+      }
+    });
+
+    memoryFields.inputs.forEach(id => {
+      const savedValue = localStorage.getItem(id);
+      if (savedValue !== null) {
+        document.getElementById(id).value = savedValue;
+      }
+    });
+  });
+
+  // 2. 當使用者修改任何設定時：自動存入 localStorage
+  function saveSettings() {
+    memoryFields.checkboxes.forEach(id => {
+      localStorage.setItem(id, document.getElementById(id).checked);
+    });
+    memoryFields.inputs.forEach(id => {
+      localStorage.setItem(id, document.getElementById(id).value);
+    });
+  }
+
+  // 為所有可調整的欄位綁定「變動即儲存」的事件
+  memoryFields.checkboxes.concat(memoryFields.inputs).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', saveSettings);
+      el.addEventListener('input', saveSettings);
+    }
+  });
+
+  // 3. 按下「確認計算」按鈕
+  document.getElementById('calcBtn').addEventListener('click', function () {
+    saveSettings(); // 計算時確保存檔一次
+
+    const hourlyRate = 196; // 時薪 196 元
+    const hours = parseFloat(document.getElementById('hoursInput').value) || 0;
+    const minutes = parseFloat(document.getElementById('minutesInput').value) || 0;
+    const bonus = parseFloat(document.getElementById('bonus').value) || 0;
+    const penalty = parseFloat(document.getElementById('penalty').value) || 0;
+
+    // 取得各個扣項的勾選狀態與輸入金額
+    const hasLabor = document.getElementById('laborCheck').checked;
+    const laborVal = hasLabor ? (parseFloat(document.getElementById('laborVal').value) || 0) : 0;
+
+    const hasGroup = document.getElementById('groupCheck').checked;
+    const groupVal = hasGroup ? (parseFloat(document.getElementById('groupVal').value) || 0) : 0;
+
+    const hasTransfer = document.getElementById('transferCheck').checked;
+    const transferVal = hasTransfer ? (parseFloat(document.getElementById('transferVal').value) || 0) : 0;
+
+    const hasNHI = document.getElementById('nhiCheck').checked;
+    const nhiVal = hasNHI ? (parseFloat(document.getElementById('nhiVal').value) || 0) : 0;
+
+    // 自訂固定扣款（訂閱費等）
+    const hasSub = document.getElementById('subCheck').checked;
+    const subVal = hasSub ? (parseFloat(document.getElementById('subVal').value) || 0) : 0;
+
+    // 計算總扣除額
+    const totalDeductions = laborVal + groupVal + transferVal + nhiVal + subVal;
+
+    // 時間轉為總小時數（包含分鐘換算）
+    const totalHours = hours + (minutes / 60);
+
+    // 薪資計算
+    const baseSalary = Math.round(hourlyRate * totalHours);
+    const totalSalary = baseSalary + bonus; // 總薪水 = 基本薪資 + 獎金
+    const netSalary = totalSalary - totalDeductions - penalty; // 實拿薪水
+
+    // 渲染結果
+    document.getElementById('totalSalary').textContent = '$ ' + totalSalary.toLocaleString();
+    document.getElementById('netSalary').textContent = '$ ' + (netSalary < 0 ? 0 : netSalary).toLocaleString();
+  });
+</script>
+
+</body>
+</html>
